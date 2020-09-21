@@ -1,0 +1,58 @@
+package main
+
+import "fmt"
+
+var colors = make(map[string] string)
+var Reset   = "\033[0m"
+
+func init(){
+	colors["Red"]  = "\033[31m"
+	colors["Green"]  = "\033[32m"
+	colors["Yellow"]  = "\033[33m"
+	colors["Blue"]  = "\033[34m"
+	colors["Purple"]  = "\033[35m"
+	colors["Cyan"]  = "\033[36m"
+	colors["Gray"]  = "\033[37m"
+	colors["White"]  = "\033[97m"
+}
+
+func colorPrint(color string, value string){
+	fmt.Println(colors[color]+value+Reset)
+}
+
+func startColor(color string) string{
+	return colors[color]
+}
+
+func endColor()string{
+	return Reset
+}
+
+//small
+func r() string{
+	return colors["Red"]
+}
+
+func g() string{
+	return colors["Green"]
+}
+
+func y() string {
+	return colors["Yellow"]
+}
+
+func b() string {
+	return colors["Blue"]
+}
+
+func p() string {
+	return colors["Purple"]
+}
+
+func w() string {
+	return colors["White"]
+}
+
+func rst() string {
+	return Reset
+}
