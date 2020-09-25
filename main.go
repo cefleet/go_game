@@ -1,5 +1,8 @@
 package main
-import "reflect"
+import (
+	"reflect"
+	"fmt"
+)
 
 type Result struct{
 	status string
@@ -8,33 +11,39 @@ type Result struct{
 
 var playing bool
 var player *Player
-var PlayerActions = make(map[string]func(string)*Result)
+//var PlayerActions = make(map[string]func(string)*Result)
 
 func main(){
 	makeMap()
 	player = setupPlayer()
+	makeMenus()
 	gameLoop()		
 }
 
-func doAction(action string, value string) *Result{
-	inputs := make([]reflect.Value, 1) //no clue how these lines work
-	inputs[0] = reflect.ValueOf(value)//but they add the args to the function
+func doAction(action string, value string, actionOn Node) *Result{
+	//This should be 1 or 0. The aregument can just simply call something without an arg sometimes.
+	len := 1
+	if value == "" {
+		len = 0
+	}
+	inputs := make([]reflect.Value, len) //The call requirers an array of reflect.Values?!?
+	
+	//do not need it if the function is to be called without an argument
+	if len > 0 {
+		inputs[0] = reflect.ValueOf(value)//but they add the args to the function
+	}
 
-	resultArr := reflect.ValueOf(player).MethodByName(action).Call(inputs)
-	return resultArr[0].Interface().(*Result)
+	//Everything that is supposed to be called as an action needs to return a result
+	result := reflect.ValueOf(actionOn).MethodByName(action).Call(inputs)[0].Interface().(*Result)
+	fmt.Println(result)
+	return result
 
-	//return result
 }
 
 func gameLoop(){
 	playing = true
-	StartMenu()
+	Menus["start"].RunMenu()
 	for playing {
-		BeforeAction(player)
-		action, value := MainMenu()
-		result := doAction(action ,value)		
-		
-		PrintResult(result)
-		
+		Menus["main"].RunMenu()		
 	}
 }

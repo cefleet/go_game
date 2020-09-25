@@ -1,6 +1,7 @@
 package main
 import (
 	"strconv"
+//	"fmt"
 )
 
 type Player struct {
@@ -8,25 +9,25 @@ type Player struct {
 	inventory []*Item
 }
 
-func (player *Player) Move(dir string) *Result{
+func (p *Player) Move(dir string) *Result{
 	//dir := "1"
 	var key, status, message, dirname string
 	if dir == "1"{
 		dirname = "up"
-		key = strconv.Itoa(player.on.x)+"-"+strconv.Itoa(player.on.y-1)
+		key = strconv.Itoa(p.on.x)+"-"+strconv.Itoa(p.on.y-1)
 	} else if dir == "2"{
 		dirname = "down"
-		key = strconv.Itoa(player.on.x)+"-"+strconv.Itoa(player.on.y+1)
+		key = strconv.Itoa(p.on.x)+"-"+strconv.Itoa(p.on.y+1)
 	} else if dir == "3"{
 		dirname="left"
-		key = strconv.Itoa(player.on.x-1)+"-"+strconv.Itoa(player.on.y)
+		key = strconv.Itoa(p.on.x-1)+"-"+strconv.Itoa(p.on.y)
 	} else if dir == "4"{
 		dirname = "right"
-		key = strconv.Itoa(player.on.x+1)+"-"+strconv.Itoa(player.on.y)
+		key = strconv.Itoa(p.on.x+1)+"-"+strconv.Itoa(p.on.y)
 	}
 
 	if val, ok := LocMap[key]; ok {
-		player.MoveTo(val)
+		p.MoveTo(val)
 		status ="complete"
 		message = "You have moved "+dirname+" one space."
 	} else {
@@ -34,6 +35,7 @@ func (player *Player) Move(dir string) *Result{
 		message = "That space is outside of the map."
 	}
 	
+
 	return &Result{
 		status,
 		message,
@@ -42,11 +44,11 @@ func (player *Player) Move(dir string) *Result{
 
 func setupPlayer() *Player{
 	
-	var player = new(Player)
+	var p = new(Player)
 
-	player.id = 1
-	player.hp = 10
-	player.MoveTo(LocMap["5-5"])
+	p.id = 1
+	p.hp = 10
+	p.MoveTo(LocMap["5-5"])
 
-	return player
+	return p
 }
