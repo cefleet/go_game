@@ -10,13 +10,13 @@ type Result struct{
 }
 
 var playing bool
-var player *Player
+//var player *Player
 //var PlayerActions = make(map[string]func(string)*Result)
 
 func main(){
-	makeMap()
-	player = setupPlayer()
-	makeMenus()
+	setupMap()
+	setupPlayer()
+	setupMenus()
 	gameLoop()		
 }
 
@@ -35,15 +35,19 @@ func doAction(action string, value string, actionOn Node) *Result{
 
 	//Everything that is supposed to be called as an action needs to return a result
 	result := reflect.ValueOf(actionOn).MethodByName(action).Call(inputs)[0].Interface().(*Result)
-	fmt.Println(result)
 	return result
 
 }
 
 func gameLoop(){
 	playing = true
-	Menus["start"].RunMenu()
+	Menu.menus["start"].RunMenu()
+
+	//same as an while loop in js and python
 	for playing {
-		Menus["main"].RunMenu()		
+
+		res := Menu.menus["main"].RunMenu()
+		fmt.Println(res)
+
 	}
 }
