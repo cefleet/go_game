@@ -1,12 +1,14 @@
 package main
 import (
 	"reflect"
-	"fmt"
+	//"fmt"
+	"strconv"
 )
 
 type Result struct{
 	status string
 	message string
+	linesOut []string
 }
 
 var playing bool
@@ -17,9 +19,11 @@ func main(){
 	setupMap()
 	setupPlayer()
 	setupMenus()
-	gameLoop()		
+	gameLoop()
+	//asciichart()		
 }
 
+//The actions need to be "done ON" specific items that are ready to have this action done on it.
 func doAction(action string, value string, actionOn Node) *Result{
 	//This should be 1 or 0. The aregument can just simply call something without an arg sometimes.
 	len := 1
@@ -39,15 +43,38 @@ func doAction(action string, value string, actionOn Node) *Result{
 
 }
 
+
+
+
 func gameLoop(){
 	playing = true
 	Menu.menus["start"].RunMenu()
 
 	//same as an while loop in js and python
 	for playing {
+		CallClear()
+		mapRes := Map.DrawMap()
+		menuItems := []string{
+			"",
+			"	| HP 		: "+strconv.Itoa(Player.hp),
+			"	| Tile 		: "+Player.on.name,
+			"	| Inv/count	: "+strconv.Itoa(len(Player.inventory)),
+		}
 
-		res := Menu.menus["main"].RunMenu()
-		fmt.Println(res)
+		for i := 0; i < 12; i++{
+			mapOut := ""
+			menuOut := ""
+			if len(mapRes.linesOut) > i {
+				mapOut = mapRes.linesOut[i]
+			}
+			if len(menuItems) > i {
+				menuOut = menuItems[i]
+			}
 
+			PrintOut(mapOut+menuOut)
+			PrintOut("\n")
+		}
+
+		Menu.menus["main"].RunMenu()
 	}
 }

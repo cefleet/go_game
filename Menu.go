@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	//"strconv"
 )
 
 type MenuSelection struct{
 	text string
 	acceptedValue string
+	valueOnAccept string //this is the value put in the arg
 	action string
 	actionOn Node
 }
@@ -19,37 +21,41 @@ type MenuScreen struct {
 }
 
 func (menu *MenuScreen) AccecptValue(value string)*Result{
-	for _, item := range menu.selections { //_would be idx
-		//fmt.Println(idx)//possible have a menu list and use the idx
+	for _, item := range menu.selections { 
 		if item.acceptedValue == value {
-			argValue := value
-			if item.action == "RunMenu"{
-				argValue = ""
-			}
-			res := doAction(item.action, argValue, item.actionOn)
+			res := doAction(item.action, item.valueOnAccept, item.actionOn)
 			return res
 		}
 	}
-	return &Result{"fail", "No-Menu-Item"}
+	return &Result{"fail", "No-Menu-Item",nil}
 }
 
 func (menu *MenuScreen) RunMenu()*Result{
 	var res string
-	PrintOut(menu.text)
+	PrintOut(menu.text+"\n")
 	for _, opt := range menu.selections{
-		PrintOut("|g||rvs|"+opt.acceptedValue+".|e| "+opt.text)
+		PrintOut(" ^g^^bld^^rvs^ "+opt.acceptedValue+". "+opt.text+" ^e^ ")
 	}
 	if menu.input {
 		fmt.Scanln(&res)
-		res := menu.AccecptValue(res)
-		return res
+		return menu.AccecptValue(res)
 	}
-	return &Result{"success", "menu-printed"}
+	return &Result{"success", "menu-printed", nil}
 }
 
 type GameMenu struct{
 	menus map[string]*MenuScreen
 } 
+
+func (menu *GameMenu) RunMenu(menuScreen string) *Result{
+	var res *Result
+	if val, ok := menu.menus[menuScreen]; ok {
+		res = val.RunMenu()
+	} else {
+		res = &Result{"error", "key-not-found", nil}
+	}
+	return res
+}
 
 var Menu = new(GameMenu)
 
@@ -61,7 +67,7 @@ func setupMenus(){
 	move := new(MenuScreen)
 
 	start.name = "start"
-	start.text = `|y||bB||bld|Welcome|e||y||bB| to the |udl| game .`
+	start.text = `^y^^bB^^bld^Welcome^e^^y^^bB^ to the ^udl^ game .`
 	start.input = false
 	
 	main.name = "main"
@@ -69,7 +75,7 @@ func setupMenus(){
 
 	main.input = true
 	main.selections = []MenuSelection{
-		{"Move","1","RunMenu",move},
+		{"Move","1","move", "RunMenu",Menu},
 	}	
 	
 	move.name = "move"
@@ -77,10 +83,10 @@ func setupMenus(){
 
 	move.input = true
 	move.selections = []MenuSelection{
-		{"Up","1","Move",Player},
-		{"Down","2","Move",Player},
-		{"Left","3","Move",Player},
-		{"Right","4","Move",Player},
+		{"Up","1","up","Move",Player},
+		{"Down","2","down","Move",Player},
+		{"Left","3","left","Move",Player},
+		{"Right","4","right","Move",Player},
 	}
 
 	MenuScreens["start"] = start

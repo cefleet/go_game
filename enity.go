@@ -5,8 +5,13 @@ type Entity struct {
 	id int
 }
 
-func (entity *Entity) SetOn(location *Location) {
+func (entity *Entity) MoveTo(location *Location) {
+	if entity.on != nil {
+		entity.on.Empty()
+	}
 	entity.on = location
+	location.on = entity
+	location.status = 1
 }
 
 func (entity *Entity) RemoveEntityFromBoard(){

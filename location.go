@@ -11,3 +11,7 @@ type Location struct{
 func (location *Location) SetOn(entity *Entity) {
 	location.on = entity
 }
+
+func (location *Location) Empty(){
+	location.on = nil
+}
